@@ -79,3 +79,8 @@ build_slinput
 build_lua
 build_tosbindl
 build_lua_with_tosbindl
+
+repo forall -c \
+  'echo $REPO_PROJECT $REPO_RREV \
+   $(git rev-parse --short HEAD) \
+   $(git diff --exit-code --quiet HEAD || echo \(modified\))'
