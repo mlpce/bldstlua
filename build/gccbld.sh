@@ -24,6 +24,7 @@ LIBCMINI_STARTUP_PATH=${BLDSTLUA_INSTALL_DIR}/libcmini/startup
 # Build libcmini
 build_libcmini() {
   pushd ${BLDSTLUA_DIR}/../libcmini
+  git clean -dfx
 
   make -C contrib/linea install
   make clean
