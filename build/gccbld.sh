@@ -16,6 +16,25 @@ BLDSTLUA_DIR=$(realpath $(pwd)/..)
 BLDSTLUA_INSTALL_DIR=${BLDSTLUA_DIR}/install
 mkdir -p ${BLDSTLUA_INSTALL_DIR}
 
+# Generate revision information
+REVISION_TEXT=${BLDSTLUA_INSTALL_DIR}/revision.txt
+repo forall -c \
+  'echo $REPO_PROJECT $REPO_RREV \
+   $(git rev-parse --short HEAD) \
+   $(git diff --exit-code --quiet HEAD || echo \(modified\))' > ${REVISION_TEXT}
+
+# Generate revision header
+REVISION_HEADER=${BLDSTLUA_INSTALL_DIR}/include/revision.h
+
+printf "#ifndef MLPCE_REVISION_HEADER_INCLUDED\n" > ${REVISION_HEADER}
+printf "#define MLPCE_REVISION_HEADER_INCLUDED\n" >> ${REVISION_HEADER}
+printf "#define MLPCE_BLDSTLUA_REV \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /bldstlua | cut -d\  -f3)" >> ${REVISION_HEADER}
+printf "#define MLPCE_LIBCMINI_REV \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /libcmini | cut -d\  -f3)" >> ${REVISION_HEADER}
+printf "#define MLPCE_LUA_REV \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /lua | cut -d\  -f3)" >> ${REVISION_HEADER}
+printf "#define MLPCE_SLINPUT_REV \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /slinput | cut -d\  -f3)" >> ${REVISION_HEADER}
+printf "#define MLPCE_TOSBINDL_REV \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /tosbindl | cut -d\  -f3)" >> ${REVISION_HEADER}
+printf "#endif\n" >> ${REVISION_HEADER}
+
 # VARs for LIBCMINI installation locations
 LIBCMINI_INCLUDE_PATH=${BLDSTLUA_INSTALL_DIR}/libcmini/include
 LIBCMINI_LIBRARY_PATH=${BLDSTLUA_INSTALL_DIR}/libcmini/lib
@@ -66,6 +85,7 @@ build_lua() {
     -D MLPCE_MATHLIB_ENABLED=OFF \
     -D MLPCE_OSLIB_ENABLED=OFF \
     -D MLPCE_UTF8LIB_ENABLED=OFF \
+    -D MLPCE_REVISION_HEADER_ENABLED=ON \
     ../../..
   make install
 
@@ -103,7 +123,4 @@ build_lua
 build_tosbindl
 build_lua_with_tosbindl
 
-repo forall -c \
-  'echo $REPO_PROJECT $REPO_RREV \
-   $(git rev-parse --short HEAD) \
-   $(git diff --exit-code --quiet HEAD || echo \(modified\))'
+cat ${REVISION_TEXT}
