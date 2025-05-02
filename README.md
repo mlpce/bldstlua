@@ -12,27 +12,31 @@ https://github.com/mlpce/mnfstlua for instructions.
 
 ## build/gccbld.sh
 
-Builds the console program lua.ttp with libcmini, slinput and tosbindl using
-the toolchain files configured for m68k-atari-mint-gcc. To run the script,
-first change to the 'build' directory before invoking ./gccbld.sh. The script
+Builds the console program lua.ttp with libcmini, slinput and tosbindl, and luac.ttp, using
+the toolchain files configured for m68k-atari-mint-gcc.
+
+To run the script, first change to the 'build' directory before invoking ./gccbld.sh. The script
 expects the directory layout to be the same as that provided by the 'repo sync'.
 
 ## build/vbccbld.sh
 
-Builds the console program lua.ttp with slinput and tosbindl using the toolchain
-files configured for vbcc. To run the script, first change to the 'build'
+Builds the console program lua.ttp with slinput and tosbindl, and luac.ttp, using the toolchain files configured for vbcc.
+
+To run the script, first change to the 'build'
 directory before invoking ./vbccbld.sh. The script expects the directory layout
 to be the same as that provided by the 'repo sync'.
 
+## Lattice C native build
+
+The Lattice C build is not scripted and needs to be done manually. See the [native build instructions](NATIVE.md).
+
 ## Lua
 
-Lua is licensed under the MIT license. For information about Lua and to view
-its license see the [Lua website](https://www.lua.org/).
+Lua is licensed under the MIT license. For information about Lua and to view its license see the [Lua website](https://www.lua.org/).
 
 ## libcmini
 
-libcmini is licensed under the LGPL-2.1. For information about libcmini and to
-view its license see the [libcmini github project](https://github.com/freemint/libcmini).
+libcmini is licensed under the LGPL-2.1. For information about libcmini and to view its license see the [libcmini github project](https://github.com/freemint/libcmini).
 
 ## m68k-atari-mint-gcc
 
