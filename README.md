@@ -28,7 +28,7 @@ to be the same as that provided by the 'repo sync'.
 
 ## Lattice C native build
 
-The Lattice C build is not scripted and needs to be done manually. See the [native build instructions](NATIVE.md).
+The Lattice C build is not scripted and needs to be done manually. See the [native build instructions](build/NATIVE.md).
 
 ## Lua
 
