@@ -20,10 +20,11 @@ mkdir -p ${BLDSTLUA_INSTALL_DIR}
 
 # Generate revision information
 REVISION_TEXT=${BLDSTLUA_INSTALL_DIR}/revision.txt
+printf "Build version: %s\n" "${BUILD_VERSION}/${TC_INT_SIZE}" > ${REVISION_TEXT}
 repo forall -c \
   'echo $REPO_PROJECT $REPO_RREV \
    $(git rev-parse --short HEAD) \
-   $(git diff --exit-code --quiet HEAD || echo \(modified\))' > ${REVISION_TEXT}
+   $(git diff --exit-code --quiet HEAD || echo \(modified\))' >> ${REVISION_TEXT}
 
 # Generate revision header
 REVISION_HEADER=${BLDSTLUA_INSTALL_DIR}/include/revision.h
