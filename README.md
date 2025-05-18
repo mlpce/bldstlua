@@ -26,6 +26,10 @@ To run the script, first change to the 'build'
 directory before invoking ./vbccbld.sh. The script expects the directory layout
 to be the same as that provided by the 'repo sync'.
 
+## build/ziprel.sh
+
+After running gccbld.sh or vbccbld.sh, ziprel.sh can be used to generate a zip file at build/8.3/STLUA.ZIP. The zip contains LUA.TTP, LUAC.TTP, license files, a short README.TXT and REVISION.TXT. The latter contains the repo names and revisions used during the build. The zip file contains filenames in uppercase 8.3 format, suitable for copying to an Atari ST.
+
 ## Lattice C native build
 
 The Lattice C build is not scripted and needs to be done manually. See the [native build instructions](build/NATIVE.md).
