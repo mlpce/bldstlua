@@ -27,6 +27,7 @@ repo forall -c \
    $(git diff --exit-code --quiet HEAD || echo \(modified\))' >> ${REVISION_TEXT}
 
 # Generate revision header
+mkdir -p ${BLDSTLUA_INSTALL_DIR}/include
 REVISION_HEADER=${BLDSTLUA_INSTALL_DIR}/include/revision.h
 
 printf "#ifndef MLPCE_REVISION_HEADER_INCLUDED\n" > ${REVISION_HEADER}
