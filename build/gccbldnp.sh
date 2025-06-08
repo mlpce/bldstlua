@@ -2,13 +2,15 @@
 set -eE
 trap 'echo Build failure' ERR
 
+# No parser build used to create a minimal luab.ttp
+
 BUILD_VERSION=$(cat buildver.txt)
 
 # Toolchain int size (16 or 32)
 TC_INT_SIZE=16
 
-if [ ! -f ./vbccbld.sh ]; then
-  echo "Error: Run in same directory as ./vbccbld.sh"
+if [ ! -f ./gccbld.sh ]; then
+  echo "Error: Run in same directory as ./gccbldnp.sh"
   exit 1
 fi
 
@@ -34,46 +36,55 @@ printf "#ifndef MLPCE_REVISION_HEADER_INCLUDED\n" > ${REVISION_HEADER}
 printf "#define MLPCE_REVISION_HEADER_INCLUDED\n" >> ${REVISION_HEADER}
 printf "#define MLPCE_BLDSTLUA_PRJ \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /bldstlua | cut -d\  -f1)" >> ${REVISION_HEADER}
 printf "#define MLPCE_BLDSTLUA_REV \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /bldstlua | cut -d\  -f3)" >> ${REVISION_HEADER}
+printf "#define MLPCE_LIBCMINI_PRJ \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /libcmini | cut -d\  -f1)" >> ${REVISION_HEADER}
+printf "#define MLPCE_LIBCMINI_REV \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /libcmini | cut -d\  -f3)" >> ${REVISION_HEADER}
 printf "#define MLPCE_LUA_PRJ \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /lua | cut -d\  -f1)" >> ${REVISION_HEADER}
 printf "#define MLPCE_LUA_REV \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /lua | cut -d\  -f3)" >> ${REVISION_HEADER}
-printf "#define MLPCE_SLINPUT_PRJ \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /slinput | cut -d\  -f1)" >> ${REVISION_HEADER}
-printf "#define MLPCE_SLINPUT_REV \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /slinput | cut -d\  -f3)" >> ${REVISION_HEADER}
 printf "#define MLPCE_TOSBINDL_PRJ \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /tosbindl | cut -d\  -f1)" >> ${REVISION_HEADER}
 printf "#define MLPCE_TOSBINDL_REV \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /tosbindl | cut -d\  -f3)" >> ${REVISION_HEADER}
 printf "#define MLPCE_BUILD_VERSION \"%s\"\n" "${BUILD_VERSION}" >> ${REVISION_HEADER}
 printf "#endif\n" >> ${REVISION_HEADER}
 
-# Build slinput
-build_slinput() {
-  pushd ${BLDSTLUA_DIR}/../slinput/build/tos/vbcc
+# VARs for LIBCMINI installation locations
+LIBCMINI_INCLUDE_PATH=${BLDSTLUA_INSTALL_DIR}/libcmini/include
+LIBCMINI_LIBRARY_PATH=${BLDSTLUA_INSTALL_DIR}/libcmini/lib
+LIBCMINI_STARTUP_PATH=${BLDSTLUA_INSTALL_DIR}/libcmini/startup
+
+# Build libcmini
+build_libcmini() {
+  pushd ${BLDSTLUA_DIR}/../libcmini
   git clean -dfx
 
-  cmake --toolchain ./vbcc${TC_INT_SIZE}.cmk \
-    -D CMAKE_BUILD_TYPE=Release \
-    -D CMAKE_INSTALL_PREFIX=${BLDSTLUA_INSTALL_DIR} \
-    ../../..
-  make install
+  make -C contrib/linea install
+  make clean
+  echo "CFLAGS+=-DSTDIO_MAP_NEWLINE" > Make.config.local
+  VERBOSE=yes make PREFIX_FOR_INCLUDE=${LIBCMINI_INCLUDE_PATH} \
+    PREFIX_FOR_LIB=${LIBCMINI_LIBRARY_PATH} \
+    PREFIX_FOR_STARTUP=${LIBCMINI_STARTUP_PATH} install
 
   popd
 }
 
 # Build and install Lua. This will install the headers needed for tosbindl
 build_lua() {
-  pushd ${BLDSTLUA_DIR}/../lua/build/tos/vbcc
+  pushd ${BLDSTLUA_DIR}/../lua/build/tos/gcc
   git clean -dfx
 
-  cmake --toolchain ./vbcc${TC_INT_SIZE}.cmk \
-    -D CMAKE_BUILD_TYPE=Release \
+  cmake --toolchain ./gcc${TC_INT_SIZE}.cmk \
+    -D CMAKE_BUILD_TYPE=MinSizeRel \
     -D CMAKE_INSTALL_PREFIX=${BLDSTLUA_INSTALL_DIR} \
+    -D LIBCMINI_ENABLED=ON \
     -D MLPCE_ENABLED=ON \
-    -D MLPCE_SLINPUT_ENABLED=ON \
+    -D MLPCE_SLINPUT_ENABLED=OFF \
     -D MLPCE_DEBUGLIB_ENABLED=OFF \
     -D MLPCE_IOLIB_ENABLED=OFF \
     -D MLPCE_MATHLIB_ENABLED=OFF \
     -D MLPCE_OSLIB_ENABLED=OFF \
     -D MLPCE_UTF8LIB_ENABLED=OFF \
     -D MLPCE_REVISION_HEADER_ENABLED=ON \
-    -D MLPCE_ONELUA_ENABLED=OFF \
+    -D MLPCE_ONELUA_ENABLED=ON \
+    -D MLPCE_PARSER_ENABLED=ON \
+    -D MLPCE_LAUXLIB_STRERROR_ENABLED=OFF \
     ../../..
   make install
 
@@ -82,11 +93,11 @@ build_lua() {
 
 # Build tosbindl
 build_tosbindl() {
-  pushd ${BLDSTLUA_DIR}/../tosbindl/build/tos/vbcc
+  pushd ${BLDSTLUA_DIR}/../tosbindl/build/tos/gcc
   git clean -dfx
 
-  cmake --toolchain ./vbcc${TC_INT_SIZE}.cmk \
-    -D CMAKE_BUILD_TYPE=Release \
+  cmake --toolchain ./gcc${TC_INT_SIZE}.cmk \
+    -D CMAKE_BUILD_TYPE=MinSizeRel \
     -D CMAKE_INSTALL_PREFIX=${BLDSTLUA_INSTALL_DIR} \
     ../../..
   make install
@@ -96,18 +107,23 @@ build_tosbindl() {
 
 # Now build Lua with tosbindl enabled
 build_lua_with_tosbindl() {
-  pushd ${BLDSTLUA_DIR}/../lua/build/tos/vbcc
+  pushd ${BLDSTLUA_DIR}/../lua/build/tos/gcc
 
   cmake -D MLPCE_TOSBINDL_ENABLED=ON \
+    -D MLPCE_PARSER_ENABLED=OFF \
     ../../..
   make VERBOSE=1 install
 
   popd
 }
 
-build_slinput
+build_libcmini
 build_lua
 build_tosbindl
 build_lua_with_tosbindl
+
+# Remove unwanted executables, leaving luab.ttp
+rm -v ../install/bin/lua.ttp
+rm -v ../install/bin/luac.ttp
 
 cat ${REVISION_TEXT}

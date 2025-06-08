@@ -2,7 +2,7 @@
 set -eE
 trap 'echo Build failure' ERR
 
-BUILD_VERSION="0.1.0-d"
+BUILD_VERSION=$(cat buildver.txt)
 
 # Toolchain int size (16 or 32)
 TC_INT_SIZE=16
