@@ -14,6 +14,10 @@ them, LUA.TTP will do that automatically. However precompiling scripts into
 bytecode means they will load more quickly. Precompiled chunks are not
 portable across different architectures, e.g. if sizeof(int) is different.
 
+LUAB.TTP is a cut down version of Lua without the parser or interactive prompt.
+As such it can only be used to run precompiled Lua bytecode. The bytecode file
+to run is passed on the command line.
+
 The following Lua libraries have been included in the build:
   coroutine, package, string, table.
 

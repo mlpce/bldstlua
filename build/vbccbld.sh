@@ -43,7 +43,7 @@ printf "#define MLPCE_TOSBINDL_REV \"%s\"\n" "$(cat ${REVISION_TEXT} | grep /tos
 printf "#define MLPCE_BUILD_VERSION \"%s\"\n" "${BUILD_VERSION}" >> ${REVISION_HEADER}
 printf "#endif\n" >> ${REVISION_HEADER}
 
-# Build slinput
+# Build and install slinput
 build_slinput() {
   pushd ${BLDSTLUA_DIR}/../slinput/build/tos/vbcc
   git clean -dfx
@@ -57,7 +57,7 @@ build_slinput() {
   popd
 }
 
-# Build and install Lua. This will install the headers needed for tosbindl
+# Configure Lua and install headers needed for tosbindl
 build_lua() {
   pushd ${BLDSTLUA_DIR}/../lua/build/tos/vbcc
   git clean -dfx
@@ -66,21 +66,21 @@ build_lua() {
     -D CMAKE_BUILD_TYPE=Release \
     -D CMAKE_INSTALL_PREFIX=${BLDSTLUA_INSTALL_DIR} \
     -D MLPCE_ENABLED=ON \
-    -D MLPCE_SLINPUT_ENABLED=ON \
     -D MLPCE_DEBUGLIB_ENABLED=OFF \
     -D MLPCE_IOLIB_ENABLED=OFF \
     -D MLPCE_MATHLIB_ENABLED=OFF \
     -D MLPCE_OSLIB_ENABLED=OFF \
     -D MLPCE_UTF8LIB_ENABLED=OFF \
+    -D MLPCE_LAUXLIB_STRERROR_ENABLED=OFF \
     -D MLPCE_REVISION_HEADER_ENABLED=ON \
     -D MLPCE_ONELUA_ENABLED=OFF \
     ../../..
-  make install
+  cmake --install . --component headers
 
   popd
 }
 
-# Build tosbindl
+# Build tosbindl and install the library and headers
 build_tosbindl() {
   pushd ${BLDSTLUA_DIR}/../tosbindl/build/tos/vbcc
   git clean -dfx
@@ -94,13 +94,30 @@ build_tosbindl() {
   popd
 }
 
-# Now build Lua with tosbindl enabled
-build_lua_with_tosbindl() {
+# Now build Luab with tosbindl enabled, slinput and parser disabled
+build_luab_with_tosbindl() {
   pushd ${BLDSTLUA_DIR}/../lua/build/tos/vbcc
 
   cmake -D MLPCE_TOSBINDL_ENABLED=ON \
+    -D MLPCE_SLINPUT_ENABLED=OFF \
+    -D MLPCE_PARSER_ENABLED=OFF \
     ../../..
-  make VERBOSE=1 install
+  make VERBOSE=1
+  cmake --install . --component luab
+
+  popd
+}
+
+# Now build Lua with slinput and parser enabled
+build_lua_with_parser() {
+  pushd ${BLDSTLUA_DIR}/../lua/build/tos/vbcc
+
+  cmake -D MLPCE_SLINPUT_ENABLED=ON \
+    -D MLPCE_PARSER_ENABLED=ON \
+    ../../..
+  make VERBOSE=1
+  cmake --install . --component libraries
+  cmake --install . --component programs
 
   popd
 }
@@ -108,6 +125,7 @@ build_lua_with_tosbindl() {
 build_slinput
 build_lua
 build_tosbindl
-build_lua_with_tosbindl
+build_luab_with_tosbindl
+build_lua_with_parser
 
 cat ${REVISION_TEXT}

@@ -20,6 +20,7 @@ mkdir -p 8.3/STLUA/LICENSE/LUA
 
 # Copy built executables
 cp -v ../install/bin/lua.ttp 8.3/STLUA/BIN/LUA.TTP
+cp -v ../install/bin/luab.ttp 8.3/STLUA/BIN/LUAB.TTP
 cp -v ../install/bin/luac.ttp 8.3/STLUA/BIN/LUAC.TTP
 cp -v ../install/revision.txt 8.3/STLUA/DOC/REVISION.TXT
 cp -v ../doc/readme.txt 8.3/STLUA/DOC/README.TXT
