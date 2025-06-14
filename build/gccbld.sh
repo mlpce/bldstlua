@@ -98,6 +98,7 @@ build_lua() {
     -D MLPCE_UTF8LIB_ENABLED=OFF \
     -D MLPCE_REVISION_HEADER_ENABLED=ON \
     -D MLPCE_ONELUA_ENABLED=ON \
+    -D MLPCE_LAUXLIB_STRERROR_ENABLED=OFF \
     ../../..
   make install
 
