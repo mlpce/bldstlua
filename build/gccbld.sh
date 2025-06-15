@@ -58,7 +58,6 @@ build_libcmini() {
   make -C contrib/linea install
   make clean
   echo "CFLAGS+=-DSTDIO_MAP_NEWLINE" > Make.config.local
-  echo "ONLY_68K=Y" >> Make.config.local
   VERBOSE=yes make PREFIX_FOR_INCLUDE=${LIBCMINI_INCLUDE_PATH} \
     PREFIX_FOR_LIB=${LIBCMINI_LIBRARY_PATH} \
     PREFIX_FOR_STARTUP=${LIBCMINI_STARTUP_PATH} install
