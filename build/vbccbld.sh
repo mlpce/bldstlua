@@ -58,7 +58,7 @@ build_slinput() {
 }
 
 # Configure Lua and install headers needed for tosbindl
-build_lua() {
+config_lua_install_headers() {
   pushd ${BLDSTLUA_DIR}/../lua/build/tos/vbcc
   git clean -dfx
 
@@ -123,7 +123,7 @@ build_lua_with_parser() {
 }
 
 build_slinput
-build_lua
+config_lua_install_headers
 build_tosbindl
 build_luab_with_tosbindl
 build_lua_with_parser
