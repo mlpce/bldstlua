@@ -1,6 +1,8 @@
 # Lattice C native build instructions
 
-2MB of memory is required to build.
+2MB of memory is required to build. These instructions can be used for Lua5.4
+or Lua5.5. The term LUA5[45] in these instructions refers to either Lua54 or
+Lua55.
 
 ## Generate zips and copy to Atari ST
 
@@ -48,14 +50,14 @@ Destination directory layout:
 ```
 C:\BUILD\LUA\BUILD\TOS\LATTICEC\INCLUDE\SLINPUT.H  
 C:\BUILD\LUA\BUILD\TOS\LATTICEC\LUA.PRJ  
-C:\BUILD\LUA\BUILD\TOS\LATTICEC\LUA54.PRJ  
+C:\BUILD\LUA\BUILD\TOS\LATTICEC\LUA5[45].PRJ
 C:\BUILD\LUA\BUILD\TOS\LATTICEC\SLINPUT.LIB  
 C:\BUILD\LUA\BUILD\TOS\LATTICEC\STACKVAL.C  
 ```
 
 ## Build tbgemdos library
 
-Before building the GEMDOS binding, three header files need to be copied from the LUA repository into the tosbindl LATTICEC directory.
+Before building the GEMDOS binding, three header files need to be copied from the LUA directory into the tosbindl LATTICEC directory.
 * LUA.H
 * LAUXLIB.H
 * LUACONF.H
@@ -94,18 +96,18 @@ C:\BUILD\LUA\BUILD\TOS\LATTICEC\INCLUDE\SLINPUT.H
 C:\BUILD\LUA\BUILD\TOS\LATTICEC\INCLUDE\TBGEMDOS.H  
 C:\BUILD\LUA\BUILD\TOS\LATTICEC\INCLUDE\TOSBINDL.H  
 C:\BUILD\LUA\BUILD\TOS\LATTICEC\LUA.PRJ  
-C:\BUILD\LUA\BUILD\TOS\LATTICEC\LUA54.PRJ  
+C:\BUILD\LUA\BUILD\TOS\LATTICEC\LUA5[45].PRJ
 C:\BUILD\LUA\BUILD\TOS\LATTICEC\SLINPUT.LIB  
 C:\BUILD\LUA\BUILD\TOS\LATTICEC\STACKVAL.C  
 C:\BUILD\LUA\BUILD\TOS\LATTICEC\TBGEMDOS.LIB  
 C:\BUILD\LUA\BUILD\TOS\LATTICEC\TOSBINDL.LIB  
 ```
 
-## Build lua54 library
+## Build lua5[45] library
 
-Start `LC5.PRG` and load the `LUA54.PRJ` project located at `LUA\BUILD\TOS\LATTICEC\LUA54.PRJ` using `Project->Load` menu.
+Start `LC5.PRG` and load the `LUA5[45].PRJ` project located at `LUA\BUILD\TOS\LATTICEC\LUA5[45].PRJ` using `Project->Load` menu.
 
-Then build using `Project->Make all` "LUA54".
+Then build using `Project->Make all` "LUA5[45]".
 
 ## Build lua.ttp
 
