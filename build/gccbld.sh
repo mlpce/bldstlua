@@ -5,7 +5,7 @@ trap 'echo Build failure' ERR
 BUILD_VERSION=$(cat buildver.txt)
 
 # Toolchain int size (16 or 32)
-TC_INT_SIZE=16
+TC_INT_SIZE=32
 
 if [ ! -f ./gccbld.sh ]; then
   echo "Error: Run in same directory as ./gccbld.sh"
