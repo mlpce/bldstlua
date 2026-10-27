@@ -108,12 +108,13 @@ build_luab_with_tosbindl() {
   popd
 }
 
-# Now build Lua with slinput and parser enabled
+# Now build Lua with slinput, parser and debuglib enabled
 build_lua_with_parser() {
   pushd ${BLDSTLUA_DIR}/../lua/build/tos/vbcc
 
   cmake -D MLPCE_SLINPUT_ENABLED=ON \
     -D MLPCE_PARSER_ENABLED=ON \
+    -D MLPCE_DEBUGLIB_ENABLED=ON \
     ../../..
   make VERBOSE=1
   cmake --install . --component libraries
