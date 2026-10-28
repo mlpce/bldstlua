@@ -11,12 +11,14 @@ projects and repository revisions used during the build.
 LUAC.TTP is a build of the Lua compiler. It is used to convert Lua scripts
 into Lua bytecode. It is not necessary to compile Lua scripts before running
 them, LUA.PRG will do that automatically. However precompiling scripts into
-bytecode means they will load more quickly. Precompiled chunks are not
+bytecode means they will load more quickly. The bytecode can also be stripped
+to remove debug information, saving runtime memory. Precompiled chunks are not
 portable across different architectures, e.g. if sizeof(int) is different.
 
-LUAB.PRG is a cut down version of Lua without the parser or interactive prompt.
-As such it can only be used to run precompiled Lua bytecode. The bytecode file
-to run is passed on the command line.
+LUAB.PRG is a cut down version of Lua without the parser or interactive
+prompt, and therefore a smaller executable file size. It can only be used to
+run precompiled Lua bytecode. The bytecode file to run is passed on the
+command line.
 
 The following Lua libraries have been included in the build:
   coroutine, package, string, table.
@@ -24,10 +26,10 @@ The following Lua libraries have been included in the build:
 The following Lua libraries have been excluded from the build:
   io, math, os, utf8
 
-Additionally, LUA.PRG also contains the Lua debug library. This is useful for
-tracebacks if a script raises an error.
+LUA.PRG also contains the Lua debug library. This is useful for tracebacks if
+a script raises an error.
 
-Additionally, this build includes a GEMDOS/Trap #2 binding targetting the
+Additionally, this build includes a GEMDOS/Trap #2 binding targeting the
 functions available in TOS 1.X. For information about the binding, see the
 README.md at https://github.com/mlpce/tosbindl.
 
@@ -39,11 +41,7 @@ however it is possible to customise PATH using e.g. an AUTO folder program.
 Multiple paths can be added to PATH using the ';' delimiter.
 
 If the environment variable PATH is not found, or it is empty, then the
-current drive is used for the search path. At the interactive prompt, type
-package.path to see the search path Lua is using.
-
-If the environment PATH is not found by getenv or is empty, then the current
-drive is used for the extra search paths.
+current drive is used for the search path.
 
 Example: When 'PATH=A:\':
  .\?.lua;.\?\init.lua;A:\lua\?.lua;A:\lua\?\init.lua;
@@ -58,6 +56,10 @@ Example: When PATH is missing or empty:
 Checking paths relative to the current directory first (e.g. .\?.lua) means
 a program can override system installed modules with modules belonging to the
 program.
+
+At the interactive prompt, type package.path to see the search path Lua is
+using. If a script needs different behaviour for finding packages, it can set
+package.path itself.
 
 Further reading
 
