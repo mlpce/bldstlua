@@ -16,8 +16,8 @@ to remove debug information, saving runtime memory. Precompiled chunks are not
 portable across different architectures, e.g. if sizeof(int) is different.
 
 LUAB.PRG is a cut down version of Lua without the parser or interactive
-prompt, and therefore a smaller executable file size. It can only be used to
-run precompiled Lua bytecode. The bytecode file to run is passed on the
+prompt, and therefore has a smaller executable file size. It can only be used
+to run precompiled Lua bytecode. The bytecode file to run is passed on the
 command line.
 
 The following Lua libraries have been included in the build:
